@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class books {
     public static void main(String[] args) {
-        int charge,copies;
+        int charge,copies,bookcode;
         String title,author,category;
 
         try{
@@ -31,6 +31,8 @@ public class books {
             switch (choice)
             {
                 case 1:
+                    System.out.println("Enter bookcode");
+                    bookcode=sc.nextInt();
                     System.out.println("Enter book title");
                     title=sc.next();
                     System.out.println("Enter auther name");
@@ -45,13 +47,14 @@ public class books {
                     try{
                         Class.forName("com.mysql.jdbc.Driver");
                         Connection con= DriverManager.getConnection("jdbc:mysql://localhost:3306/librarydb","root","");
-                        String sql="INSERT INTO `library`(`title`, `author`, `category`, `charge`, `copies`) VALUES  (?,?,?,?,?)";
+                        String sql="INSERT INTO `library`(`bookcode`,`title`, `author`, `category`, `charge`, `copies`) VALUES  (?,?,?,?,?,?)";
                         PreparedStatement stmt=con.prepareStatement((sql));
-                        stmt.setString(1,title);
-                        stmt.setString(2,author);
-                        stmt.setString(3,category);
-                        stmt.setInt(4,charge);
-                        stmt.setInt(5,copies);
+                        stmt.setInt(1,bookcode);
+                        stmt.setString(2,title);
+                        stmt.setString(3,author);
+                        stmt.setString(4,category);
+                        stmt.setInt(5,charge);
+                        stmt.setInt(6,copies);
                         stmt.executeUpdate();
                         System.out.println("value inserted successfully.........!");
                     }
@@ -64,17 +67,19 @@ public class books {
                     try{
                         Class.forName("com.mysql.jdbc.Driver");
                         Connection con= DriverManager.getConnection("jdbc:mysql://localhost:3306/librarydb","root","");
-                        String sql="SELECT `title`, `author`, `category`, `charge`, `copies` FROM `library`";
+                        String sql="SELECT `bookcode`,`title`, `author`, `category`, `charge`, `copies` FROM `library`";
                         Statement stmt=con.createStatement();
                         ResultSet rs=stmt.executeQuery(sql);
 
 
                         while ((rs.next())) {
+                            String getbookcode = rs.getString(("bookcode"));
                             String gettitle = rs.getString(("title"));
                             String getauthor = rs.getString(("author"));
                             String getcategory = rs.getString(("category"));
                             String getcharge = rs.getString(("charge"));
                             String getcopies = rs.getString(("copies"));
+                            System.out.println("Book code =" + getbookcode);
                             System.out.println("Title =" + gettitle);
                             System.out.println("Author=" + getauthor);
                             System.out.println("Catagor=" + getcategory);
@@ -89,6 +94,34 @@ public class books {
                     break;
                 case 3:
                     System.out.println("Search books");
+                    System.out.println("enter book code");
+                    bookcode=sc.nextInt();
+                    try{
+                        Class.forName("com.mysql.jdbc.Driver");
+                        Connection con= DriverManager.getConnection("jdbc:mysql://localhost:3306/librarydb","root","");
+                        String sql="SELECT `title`, `author`, `category`, `charge`, `copies` FROM `library` WHERE `bookcode`="+String.valueOf(bookcode);
+                        Statement stmt=con.createStatement();
+                        ResultSet rs=stmt.executeQuery(sql);
+                        while(rs.next()){
+                            String gettitle = rs.getString(("title"));
+                            String getauthor = rs.getString(("author"));
+                            String getcategory = rs.getString(("category"));
+                            String getcharge = rs.getString(("charge"));
+                            String getcopies= rs.getString(("copies"));
+                            System.out.println("Title=" + gettitle);
+                            System.out.println("Author=" + getauthor);
+                            System.out.println("Category=" + getcategory);
+                            System.out.println("Charge=" + getcharge);
+                            System.out.println("Copies=" + getcopies);
+                        }
+
+
+
+                    }
+                    catch (Exception e){
+                        System.out.println((e));
+                    }
+
                     break;
                 case 4:
                     System.out.println("Update books");
