@@ -1,7 +1,20 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.util.Scanner;
 
 public class books {
     public static void main(String[] args) {
+        int charge,copies;
+        String title,author,category;
+
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con= DriverManager.getConnection("jdbc:mysql://localhost:3306/librarydb","root","");
+        }
+        catch (Exception e){
+            System.out.println((e));
+        }
         int choice;
         while(true)
         {
@@ -20,7 +33,34 @@ public class books {
             switch (choice)
             {
                 case 1:
-                    System.out.println("add books");
+                    System.out.println("Enter book title");
+                    title=sc.next();
+                    System.out.println("Enter auther name");
+                    author=sc.next();
+                    System.out.println("Enter category");
+                    category=sc.next();
+                    System.out.println("Enter charge per day");
+                    charge=sc.nextInt();
+                    System.out.println("Ener number of copies");
+                    copies=sc.nextInt();
+
+                    try{
+                        Class.forName("com.mysql.jdbc.Driver");
+                        Connection con= DriverManager.getConnection("jdbc:mysql://localhost:3306/librarydb","root","");
+                        String sql="INSERT INTO `library`(`title`, `author`, `category`, `charge`, `copies`) VALUES  (?,?,?,?,?)";
+                        PreparedStatement stmt=con.prepareStatement((sql));
+                        stmt.setString(1,title);
+                        stmt.setString(2,author);
+                        stmt.setString(3,category);
+                        stmt.setInt(4,charge);
+                        stmt.setInt(5,copies);
+                        stmt.executeUpdate();
+                        System.out.println("value inserted successfully.........!");
+                    }
+                    catch (Exception e){
+                        System.out.println((e));
+                    }
+
                     break;
                 case 2:
                     System.out.println("View books:--");
